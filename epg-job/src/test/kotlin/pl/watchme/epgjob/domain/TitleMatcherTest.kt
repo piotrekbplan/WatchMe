@@ -76,7 +76,7 @@ class TitleMatcherTest {
     }
 
     @Test
-    fun `series ignores year and falls back to title prefix`() {
+    fun `series ignores year and is searched by series name first`() {
         catalog.hits["Dom pod Dwoma Orłami" to ProgrammeKind.SERIES] = listOf(seriesHit(5, "Dom pod dwoma orłami", 2023))
         catalog.imdbIds[5] = "tt5"
         val request = series("Dom pod Dwoma Orłami. Kłamstwa Zofii. ", 2026)
@@ -84,8 +84,36 @@ class TitleMatcherTest {
         val entry = matcher().resolve(listOf(request), cache).entries.getValue(request.key)
 
         assertThat(request.key.year).isNull()
-        assertThat(catalog.searches).containsExactly("Dom pod Dwoma Orłami. Kłamstwa Zofii", "Dom pod Dwoma Orłami")
+        assertThat(catalog.searches).containsExactly("Dom pod Dwoma Orłami")
         assertThat(entry.imdbId).isEqualTo("tt5")
+    }
+
+    @Test
+    fun `episodes of one series are searched and rated once`() {
+        catalog.hits["Ranczo" to ProgrammeKind.SERIES] = listOf(seriesHit(7, "Ranczo", 2006))
+        catalog.imdbIds[7] = "tt7"
+        ratings.scores["tt7"] = ImdbScore(8.6, 12000)
+        val first = series("Ranczo 2. Lokalna rewolucja.", 2026)
+        val second = series("Ranczo 3. Nowy wójt.", 2026)
+
+        val outcome = matcher().resolve(listOf(first, second), cache)
+
+        assertThat(first.key).isEqualTo(second.key)
+        assertThat(catalog.searches).containsExactly("Ranczo")
+        assertThat(ratings.calls).containsExactly("tt7")
+        assertThat(outcome.entries.getValue(second.key).rating).isEqualTo(8.6)
+    }
+
+    @Test
+    fun `new movies are rated before new series when budget is short`() {
+        catalog.hits["Ranczo" to ProgrammeKind.SERIES] = listOf(seriesHit(7, "Ranczo", 2006))
+        catalog.imdbIds[7] = "tt-series"
+        catalog.hits["Pianista" to ProgrammeKind.MOVIE] = listOf(movieHit(1, "Pianista", 2002))
+        catalog.imdbIds[1] = "tt-movie"
+
+        matcher(budget = 1).resolve(listOf(series("Ranczo 2. Lokalna rewolucja.", 2026), movie("Pianista", 2002)), cache)
+
+        assertThat(ratings.calls).containsExactly("tt-movie")
     }
 
     @Test
@@ -107,7 +135,7 @@ class TitleMatcherTest {
 
         val entry = matcher().resolve(listOf(request), cache).entries.getValue(request.key)
 
-        assertThat(catalog.searches).containsExactly("Shrek 2", "Shrek")
+        assertThat(catalog.searches).containsExactly("Shrek 2")
         assertThat(entry.imdbId).isNull()
     }
 

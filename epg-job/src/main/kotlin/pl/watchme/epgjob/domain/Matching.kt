@@ -36,11 +36,10 @@ data class MatchKey(val kind: ProgrammeKind, val normalizedTitle: String, val ye
 
     companion object {
         fun of(title: String, kind: ProgrammeKind, year: Int?): MatchKey =
-            MatchKey(
-                kind = kind,
-                normalizedTitle = TitleNormalizer.key(TitleNormalizer.clean(title)),
-                year = if (kind == ProgrammeKind.MOVIE) year else null,
-            )
+            when (kind) {
+                ProgrammeKind.MOVIE -> MatchKey(kind, TitleNormalizer.key(TitleNormalizer.clean(title)), year)
+                ProgrammeKind.SERIES -> MatchKey(kind, TitleNormalizer.key(TitleNormalizer.seriesName(title)), null)
+            }
     }
 }
 
@@ -126,7 +125,7 @@ class TitleMatcher(
 
         unique.filter { run.needsSearch(cache[it.key]) }.forEach(run::search)
         unique.mapNotNull { request -> cache[request.key]?.takeIf(run::needsRating)?.let { request.key to it } }
-            .sortedBy { (_, entry) -> entry.ratedAt ?: Instant.MIN }
+            .sortedWith(compareBy({ (_, entry) -> entry.ratedAt ?: Instant.MIN }, { (key, _) -> key.kind != ProgrammeKind.MOVIE }))
             .forEach { (key, entry) -> run.rate(key, entry) }
         unique.forEach { request -> cache[request.key]?.let { cache[request.key] = it.copy(lastSeenAt = run.now) } }
 
@@ -179,7 +178,7 @@ class TitleMatcher(
         fun stats() = MatchStats(searched, matched, rated, failures, !ratingsAvailable)
 
         private fun find(request: MatchRequest): MatchEntry? {
-            for (candidate in TitleNormalizer.candidates(request.title)) {
+            for (candidate in TitleNormalizer.candidates(request.title, request.key.kind)) {
                 val hit = catalog.search(candidate, request.key.kind)
                     .take(MAX_HITS)
                     .firstOrNull { accepts(it, candidate, request) }
