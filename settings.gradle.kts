@@ -24,3 +24,4 @@ rootProject.name = "WatchMe"
 include(":epg-contract", ":epg-job")
 include(":app")
 include(":core:domain", ":core:testing", ":core:data", ":core:designsystem")
+include(":feature:lineup")
