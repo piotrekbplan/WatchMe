@@ -1,0 +1,85 @@
+bundles:
+  fta: ["TVP 1", "TVP 2", "Polsat", "TVN", "TV 4", "TV Puls", "TVN 7", "TV 6", "Puls 2", "Super Polsat", "TTV", "Tele 5", "Fokus TV", "METRO", "NOWA TV", "ZOOM TV", "WP", "TVP Rozrywka", "TVP Kultura", "TVP Dokument", "TVP Historia", "TVP Seriale", "TVP ABC", "Stopklatka TV"]
+  polsat-group: ["Polsat 2", "Polsat Film", "Polsat Film 2", "Polsat Seriale", "Polsat Café", "Polsat Play", "Polsat Doku", "Polsat Rodzina", "POLSAT ROMANS", "Polsat Comedy Central Extra", "Polsat Viasat History", "Polsat Viasat Nature", "Polsat JimJam", "CI Polsat"]
+  tvn-group: ["TVN Style", "TVN Turbo", "TVN Fabuła"]
+  film-basic: ["Kino Polska", "Kino TV", "Paramount Channel", "AMC", "Warner TV", "Epic Drama", "FILMAX", "Sundance TV", "Ale Kino+"]
+  series-basic: ["AXN", "AXN Black", "AXN White", "AXN Spin", "13 Ulica", "SCI FI", "Comedy Central", "FX", "FX Comedy", "CBS Europa", "CBS Action", "BBC First", "BBC Brit", "NOVELA TV", "Novelas+", "ROMANCE TV"]
+  docs-basic: ["Discovery Channel", "Discovery Historia", "National Geographic Channel", "National Geographic Wild", "HISTORY", "Animal Planet", "BBC Earth", "ID", "Planete+"]
+  lifestyle-basic: ["TLC", "BBC Lifestyle", "Lifetime", "HGTV", "Food Network", "Travel Channel", "E! Entertainment", "Discovery Life"]
+  kids-basic: ["Cartoon Network", "CARTOONITO", "Nickelodeon", "Nick Jr.", "Disney Channel", "Disney Junior", "Disney XD", "Teletoon", "Minimini+", "TOP KIDS"]
+  hbo: ["HBO", "HBO 2", "HBO 3", "Cinemax", "Cinemax 2"]
+  canal-plus: ["Canal+ Premium", "Canal+ 1", "Canal+ Film", "Canal+ Family", "Canal+ Seriale", "Canal+ Dokument", "Canal+ Kuchnia", "Canal+ Domo"]
+  filmbox: ["FILMBOX+ One", "FILMBOX+ Action", "FILMBOX+ Hits", "Filmbox Premium HD", "Filmbox Family", "Filmbox Arthouse"]
+  skyshowtime: ["Skyshowtime 1", "Skyshowtime 2"]
+
+operators:
+  - id: play
+    name: Play
+    packages:
+      - id: play-start
+        name: Play TV Start
+        bundles: [fta, tvn-group]
+      - id: play-plus
+        name: Play TV Plus
+        includes: [play-start]
+        bundles: [polsat-group, film-basic, series-basic, docs-basic, lifestyle-basic, kids-basic]
+      - id: play-max
+        name: Play TV Max
+        includes: [play-plus]
+        bundles: [hbo, canal-plus, filmbox]
+  - id: polsat-box
+    name: Polsat Box
+    packages:
+      - id: polsat-box-start
+        name: Polsat Box Start
+        bundles: [fta, polsat-group]
+      - id: polsat-box-familijny
+        name: Polsat Box Familijny
+        includes: [polsat-box-start]
+        bundles: [tvn-group, film-basic, series-basic, docs-basic, lifestyle-basic, kids-basic]
+      - id: polsat-box-premium
+        name: Polsat Box Familijny Premium
+        includes: [polsat-box-familijny]
+        bundles: [hbo, canal-plus, filmbox, skyshowtime]
+  - id: orange
+    name: Orange TV
+    packages:
+      - id: orange-start
+        name: Orange TV Start
+        bundles: [fta]
+      - id: orange-optymalny
+        name: Orange TV Optymalny
+        includes: [orange-start]
+        bundles: [polsat-group, tvn-group, series-basic, docs-basic, kids-basic]
+      - id: orange-pelny
+        name: Orange TV Pełny
+        includes: [orange-optymalny]
+        bundles: [film-basic, lifestyle-basic, hbo, canal-plus, filmbox]
+  - id: vectra
+    name: Vectra
+    packages:
+      - id: vectra-mini
+        name: Vectra Mini
+        bundles: [fta]
+      - id: vectra-optymalny
+        name: Vectra Optymalny
+        includes: [vectra-mini]
+        bundles: [polsat-group, tvn-group, film-basic, series-basic, docs-basic, lifestyle-basic, kids-basic]
+      - id: vectra-max
+        name: Vectra Max
+        includes: [vectra-optymalny]
+        bundles: [hbo, canal-plus, filmbox]
+  - id: canal-plus
+    name: Canal+
+    packages:
+      - id: canal-plus-start
+        name: Canal+ Start
+        bundles: [fta, tvn-group, canal-plus]
+      - id: canal-plus-seriale-filmy
+        name: Canal+ Seriale i Filmy
+        includes: [canal-plus-start]
+        bundles: [film-basic, series-basic, docs-basic, lifestyle-basic, kids-basic, skyshowtime]
+      - id: canal-plus-super
+        name: Canal+ Super+
+        includes: [canal-plus-seriale-filmy]
+        bundles: [hbo, polsat-group, filmbox]
