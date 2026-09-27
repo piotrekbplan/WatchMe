@@ -59,6 +59,10 @@ class FakeLineupDao : LineupDao {
     override suspend fun upsert(lineup: LineupEntity) {
         row.value = lineup
     }
+
+    override suspend fun clear() {
+        row.value = null
+    }
 }
 
 class FakeCatalogDao : CatalogDao {

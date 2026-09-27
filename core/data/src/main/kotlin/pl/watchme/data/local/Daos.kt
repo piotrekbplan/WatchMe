@@ -44,6 +44,9 @@ interface LineupDao {
 
     @Upsert
     suspend fun upsert(lineup: LineupEntity)
+
+    @Query("DELETE FROM lineup")
+    suspend fun clear()
 }
 
 @Dao
