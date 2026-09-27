@@ -11,6 +11,10 @@ import assertk.assertions.isTrue
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import pl.watchme.domain.DomainError
@@ -48,12 +52,27 @@ class RankingViewModelTest {
         )
     }
     private val catalogs = FakeCatalogRepository(Outcome.Success(TestData.catalog))
+    private val subscriptions = mutableListOf<Job>()
+
+    @AfterEach
+    fun unsubscribe() {
+        subscriptions.forEach { it.cancel() }
+    }
 
     private fun viewModel(zone: ZoneId = ZoneOffset.UTC) = RankingViewModel(
-        ObserveRankingUseCase(lineups, guides, catalogs, clock),
-        RefreshGuideUseCase(lineups, guides, clock),
+        ObserveRankingUseCase(lineups, guides, catalogs),
+        RefreshGuideUseCase(lineups, guides, catalogs, clock),
+        clock,
         zone,
-    )
+    ).also { it.subscribe() }
+
+    private fun RankingViewModel.subscribe(): Job =
+        CoroutineScope(mainDispatcher.dispatcher).launch { state.collect {} }.also { subscriptions += it }
+
+    private fun advanceMinutes(minutes: Long) {
+        mainDispatcher.dispatcher.scheduler.advanceTimeBy(minutes * 60_000)
+        mainDispatcher.dispatcher.scheduler.runCurrent()
+    }
 
     private fun RankingViewModel.content() = state.value as RankingUiState.Content
 
@@ -68,7 +87,7 @@ class RankingViewModelTest {
     }
 
     @Test
-    fun `startup refreshes stale data and ranks what airs now`() {
+    fun `opening refreshes stale data and ranks what airs now`() {
         val viewModel = viewModel()
 
         assertThat(guides.refreshed).hasSize(1)
@@ -77,6 +96,28 @@ class RankingViewModelTest {
         assertThat(content.rated.map { it.position }).containsExactly(1, 2)
         assertThat(content.isRefreshing).isFalse()
         assertThat(content.selectedTime).isNull()
+    }
+
+    @Test
+    fun `now ranking moves forward with the clock`() {
+        val viewModel = viewModel()
+
+        clock.now = Instant.parse("2026-09-28T22:00:00Z")
+        advanceMinutes(1)
+
+        assertThat(viewModel.content().rated.map { it.title }).containsExactly("Wieczorny film")
+    }
+
+    @Test
+    fun `coming back to the screen checks freshness again`() {
+        val viewModel = viewModel()
+        assertThat(guides.refreshed).hasSize(1)
+
+        subscriptions.forEach { it.cancel() }
+        advanceMinutes(1)
+        viewModel.subscribe()
+
+        assertThat(guides.refreshed).hasSize(2)
     }
 
     @Test
@@ -141,7 +182,20 @@ class RankingViewModelTest {
     }
 
     @Test
-    fun `failed refresh without data shows error until a retry succeeds`() {
+    fun `offline with cache but nothing airing keeps the ranking screen`() {
+        guides.refreshOutcome = Outcome.Failure(DomainError.Network)
+        guides.lastRefreshAt = Instant.parse("2026-09-28T11:30:00Z")
+        val viewModel = viewModel()
+
+        viewModel.onTimeSelected(Instant.parse("2026-09-29T06:00:00Z"))
+
+        val content = viewModel.content()
+        assertThat(content.isEmpty).isTrue()
+        assertThat(content.isOffline).isTrue()
+    }
+
+    @Test
+    fun `failed refresh without any cached data shows error until a retry succeeds`() {
         guides.programmes.value = emptyList()
         guides.refreshOutcome = Outcome.Failure(DomainError.Network)
         val viewModel = viewModel()
