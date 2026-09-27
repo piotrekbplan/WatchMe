@@ -82,6 +82,18 @@ class CatalogAndLineupRepositoryTest {
     }
 
     @Test
+    fun `cached catalog is observed without network`() = runTest {
+        catalogs.observe().test {
+            assertThat(awaitItem()).isNull()
+
+            catalogs.catalog()
+
+            assertThat(awaitItem()?.channels?.map { it.name }).isEqualTo(listOf("TVP 1"))
+        }
+        assertThat(remote.catalogCalls).isEqualTo(1)
+    }
+
+    @Test
     fun `lineup is saved and observed`() = runTest {
         val lineups = LineupRepositoryImpl(FakeLineupDao())
         val lineup = ChannelLineup(setOf(ChannelId("tvp-1")), PackageRef("play", "play-start"), now)

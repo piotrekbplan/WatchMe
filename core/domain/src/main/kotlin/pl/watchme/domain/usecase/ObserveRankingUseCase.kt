@@ -1,13 +1,13 @@
 package pl.watchme.domain.usecase
 
-import java.time.Clock
 import java.time.Instant
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import pl.watchme.domain.model.Catalog
 import pl.watchme.domain.model.Channel
 import pl.watchme.domain.model.ChannelId
 import pl.watchme.domain.model.ChannelLineup
@@ -17,11 +17,11 @@ import pl.watchme.domain.ranking.RankingPolicy
 import pl.watchme.domain.repository.CatalogRepository
 import pl.watchme.domain.repository.GuideRepository
 import pl.watchme.domain.repository.LineupRepository
-import pl.watchme.domain.valueOrNull
 
 data class Ranking(
     val guide: RankedGuide,
     val at: Instant,
+    val isNow: Boolean,
     val hasChannels: Boolean,
     val updatedAt: Instant? = null,
 )
@@ -30,21 +30,19 @@ class ObserveRankingUseCase @Inject constructor(
     private val lineups: LineupRepository,
     private val guides: GuideRepository,
     private val catalogs: CatalogRepository,
-    private val clock: Clock,
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    operator fun invoke(at: Instant?): Flow<Ranking> =
-        lineups.observe().flatMapLatest { lineup ->
-            val now = clock.instant()
-            val moment = at?.let(TimeWindow.rankingRange(now)::clamp) ?: now
+    operator fun invoke(at: Instant?, now: Flow<Instant>): Flow<Ranking> =
+        combine(lineups.observe(), now, ::Pair).flatMapLatest { (lineup, current) ->
+            val moment = at?.let(TimeWindow.rankingRange(current)::clamp) ?: current
             if (lineup == null || lineup.isEmpty) {
-                flowOf(Ranking(RankedGuide.EMPTY, moment, hasChannels = false))
+                flowOf(Ranking(RankedGuide.EMPTY, moment, isNow = at == null, hasChannels = false))
             } else {
-                val channels = channelsOf(lineup)
-                guides.observe(lineup.channelIds, TimeWindow.around(now)).map { programmes ->
+                combine(guides.observe(lineup.channelIds, TimeWindow.around(current)), catalogs.observe()) { programmes, catalog ->
                     Ranking(
-                        guide = RankingPolicy.rank(programmes, channels, moment),
+                        guide = RankingPolicy.rank(programmes, channelsOf(catalog, lineup), moment),
                         at = moment,
+                        isNow = at == null,
                         hasChannels = true,
                         updatedAt = guides.lastRefresh(lineup.channelIds),
                     )
@@ -52,9 +50,8 @@ class ObserveRankingUseCase @Inject constructor(
             }
         }
 
-    private suspend fun channelsOf(lineup: ChannelLineup): Map<ChannelId, Channel> =
-        catalogs.catalog().valueOrNull()
-            ?.channels
+    private fun channelsOf(catalog: Catalog?, lineup: ChannelLineup): Map<ChannelId, Channel> =
+        catalog?.channels
             ?.filter { it.id in lineup.channelIds }
             ?.associateBy { it.id }
             .orEmpty()

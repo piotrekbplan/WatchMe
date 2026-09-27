@@ -50,6 +50,9 @@ interface LineupDao {
 interface CatalogDao {
 
     @Query("SELECT * FROM catalog_cache WHERE id = $SINGLE_ROW_ID")
+    fun observe(): Flow<CatalogCacheEntity?>
+
+    @Query("SELECT * FROM catalog_cache WHERE id = $SINGLE_ROW_ID")
     suspend fun get(): CatalogCacheEntity?
 
     @Upsert

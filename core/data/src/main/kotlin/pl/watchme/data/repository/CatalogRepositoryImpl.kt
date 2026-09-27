@@ -4,6 +4,8 @@ import java.time.Clock
 import java.time.Duration
 import java.time.Instant
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
 import org.slf4j.LoggerFactory
 import pl.watchme.data.local.CatalogCacheEntity
@@ -26,6 +28,8 @@ class CatalogRepositoryImpl @Inject constructor(
 
     private val log = LoggerFactory.getLogger(CatalogRepositoryImpl::class.java)
     private val json = EpgContract.json
+
+    override fun observe(): Flow<Catalog?> = cache.observe().map { it?.let(::decode) }
 
     override suspend fun catalog(): Outcome<Catalog> {
         val now = clock.instant()

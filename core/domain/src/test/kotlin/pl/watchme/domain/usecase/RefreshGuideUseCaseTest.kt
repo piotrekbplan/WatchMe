@@ -11,6 +11,7 @@ import pl.watchme.domain.DomainError
 import pl.watchme.domain.Outcome
 import pl.watchme.domain.model.ChannelLineup
 import pl.watchme.domain.model.TimeWindow
+import pl.watchme.testing.FakeCatalogRepository
 import pl.watchme.testing.FakeGuideRepository
 import pl.watchme.testing.FakeLineupRepository
 import pl.watchme.testing.MutableClock
@@ -21,7 +22,31 @@ class RefreshGuideUseCaseTest {
     private val now = Instant.parse("2026-09-28T19:00:00Z")
     private val lineups = FakeLineupRepository(ChannelLineup(setOf(TestData.tvp.id), null, now))
     private val guides = FakeGuideRepository()
-    private val refreshGuide = RefreshGuideUseCase(lineups, guides, MutableClock(now))
+    private val catalogs = FakeCatalogRepository(Outcome.Success(TestData.catalog))
+    private val refreshGuide = RefreshGuideUseCase(lineups, guides, catalogs, MutableClock(now))
+
+    @Test
+    fun `refreshing the guide also refreshes the catalog`() = runTest {
+        refreshGuide(force = true)
+
+        assertThat(catalogs.calls).isEqualTo(1)
+    }
+
+    @Test
+    fun `catalog failure does not fail the guide refresh`() = runTest {
+        catalogs.outcome = Outcome.Failure(DomainError.Network)
+
+        assertThat(refreshGuide(force = true)).isEqualTo(Outcome.Success(RefreshResult.REFRESHED))
+    }
+
+    @Test
+    fun `up to date guide does not touch the catalog`() = runTest {
+        guides.lastRefreshAt = now
+
+        refreshGuide(force = false)
+
+        assertThat(catalogs.calls).isEqualTo(0)
+    }
 
     @Test
     fun `no channels means nothing to refresh`() = runTest {

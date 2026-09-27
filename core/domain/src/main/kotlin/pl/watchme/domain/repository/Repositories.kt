@@ -10,6 +10,7 @@ import pl.watchme.domain.model.Programme
 import pl.watchme.domain.model.TimeWindow
 
 interface CatalogRepository {
+    fun observe(): Flow<Catalog?>
     suspend fun catalog(): Outcome<Catalog>
 }
 

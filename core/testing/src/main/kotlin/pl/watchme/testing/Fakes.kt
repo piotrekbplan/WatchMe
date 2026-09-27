@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import pl.watchme.domain.Outcome
+import pl.watchme.domain.valueOrNull
 import pl.watchme.domain.model.Catalog
 import pl.watchme.domain.model.ChannelId
 import pl.watchme.domain.model.ChannelLineup
@@ -56,7 +57,10 @@ class FakeGuideRepository : GuideRepository {
 }
 
 class FakeCatalogRepository(var outcome: Outcome<Catalog>) : CatalogRepository {
+    val cached = MutableStateFlow(outcome.valueOrNull())
     var calls = 0
+
+    override fun observe(): Flow<Catalog?> = cached
 
     override suspend fun catalog(): Outcome<Catalog> {
         calls++

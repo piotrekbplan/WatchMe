@@ -62,12 +62,15 @@ class FakeLineupDao : LineupDao {
 }
 
 class FakeCatalogDao : CatalogDao {
-    var row: CatalogCacheEntity? = null
+    private val state = MutableStateFlow<CatalogCacheEntity?>(null)
+    val row: CatalogCacheEntity? get() = state.value
 
-    override suspend fun get(): CatalogCacheEntity? = row
+    override fun observe(): Flow<CatalogCacheEntity?> = state
+
+    override suspend fun get(): CatalogCacheEntity? = state.value
 
     override suspend fun upsert(cache: CatalogCacheEntity) {
-        row = cache
+        state.value = cache
     }
 }
 
