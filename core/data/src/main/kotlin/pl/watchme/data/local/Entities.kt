@@ -1,5 +1,6 @@
 package pl.watchme.data.local
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -37,6 +38,7 @@ data class LineupEntity(
     val operatorId: String?,
     val packageId: String?,
     val updatedAtMillis: Long,
+    @ColumnInfo(defaultValue = "0") val dirty: Boolean = false,
 )
 
 @Entity(tableName = "catalog_cache")

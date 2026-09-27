@@ -27,6 +27,9 @@ dependencies {
     implementation(libs.slf4j.api)
     implementation(libs.tink.android)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
 
     testImplementation(project(":core:testing"))
     testRuntimeOnly(libs.logback.classic)

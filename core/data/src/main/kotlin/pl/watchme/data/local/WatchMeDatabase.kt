@@ -1,5 +1,6 @@
 package pl.watchme.data.local
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.withTransaction
@@ -7,8 +8,9 @@ import javax.inject.Inject
 
 @Database(
     entities = [ProgrammeEntity::class, GuideSyncEntity::class, LineupEntity::class, CatalogCacheEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = true,
+    autoMigrations = [AutoMigration(from = 1, to = 2)],
 )
 abstract class WatchMeDatabase : RoomDatabase() {
     abstract fun programmeDao(): ProgrammeDao

@@ -4,10 +4,12 @@ import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.serialization.SerializationException
 import pl.watchme.data.mapper.UnsupportedSchemaException
+import pl.watchme.data.sync.FirestoreRejectedException
 import pl.watchme.domain.DomainError
 import retrofit2.HttpException
 
 internal fun Throwable.toDomainError(): DomainError = when (this) {
+    is FirestoreRejectedException -> DomainError.Unauthorized
     is IOException, is HttpException -> DomainError.Network
     is UnsupportedSchemaException, is SerializationException -> DomainError.UnsupportedData
     else -> DomainError.Unknown(message)

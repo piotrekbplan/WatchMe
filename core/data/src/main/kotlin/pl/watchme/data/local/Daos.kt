@@ -42,6 +42,12 @@ interface LineupDao {
     @Query("SELECT * FROM lineup WHERE id = $SINGLE_ROW_ID")
     fun observe(): Flow<LineupEntity?>
 
+    @Query("SELECT * FROM lineup WHERE id = $SINGLE_ROW_ID")
+    suspend fun get(): LineupEntity?
+
+    @Query("UPDATE lineup SET dirty = 0 WHERE updatedAtMillis = :updatedAtMillis")
+    suspend fun markClean(updatedAtMillis: Long)
+
     @Upsert
     suspend fun upsert(lineup: LineupEntity)
 

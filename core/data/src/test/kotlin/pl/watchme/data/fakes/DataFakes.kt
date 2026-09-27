@@ -56,6 +56,12 @@ class FakeLineupDao : LineupDao {
 
     override fun observe(): Flow<LineupEntity?> = row
 
+    override suspend fun get(): LineupEntity? = row.value
+
+    override suspend fun markClean(updatedAtMillis: Long) {
+        row.value = row.value?.takeIf { it.updatedAtMillis == updatedAtMillis }?.copy(dirty = false) ?: row.value
+    }
+
     override suspend fun upsert(lineup: LineupEntity) {
         row.value = lineup
     }
