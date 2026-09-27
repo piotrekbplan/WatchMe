@@ -1,0 +1,22 @@
+<resources>
+    <string name="ranking_title">WatchMe</string>
+    <string name="ranking_now">Teraz</string>
+    <string name="ranking_pick_time">Wybierz godzinę</string>
+    <string name="ranking_edit_channels">Zmień kanały</string>
+    <string name="ranking_unrated">Bez oceny</string>
+    <string name="ranking_offline_since">Offline · dane z %1$s</string>
+    <string name="ranking_offline">Offline · pokazuję zapisane dane</string>
+    <string name="ranking_no_channels_title">Nie wybrano kanałów</string>
+    <string name="ranking_no_channels_message">Wybierz operatora i kanały, a pokażemy, co najlepszego na nich leci.</string>
+    <string name="ranking_no_channels_action">Wybierz kanały</string>
+    <string name="ranking_error_title">Brak połączenia</string>
+    <string name="ranking_error_message">Nie udało się pobrać programu TV. Sprawdź internet i spróbuj ponownie.</string>
+    <string name="ranking_retry">Spróbuj ponownie</string>
+    <string name="ranking_empty_title">Nic nie leci</string>
+    <string name="ranking_empty_message">O tej porze na Twoich kanałach nie ma filmów ani seriali.</string>
+    <string name="ranking_picker_title">Kiedy chcesz oglądać?</string>
+    <string name="ranking_picker_today">Dziś</string>
+    <string name="ranking_picker_tomorrow">Jutro</string>
+    <string name="ranking_picker_confirm">Pokaż</string>
+    <string name="ranking_picker_cancel">Anuluj</string>
+</resources>
