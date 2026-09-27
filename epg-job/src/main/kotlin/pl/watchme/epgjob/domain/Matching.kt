@@ -107,6 +107,11 @@ interface TitleResolver {
     fun resolve(requests: List<MatchRequest>, cache: MatchCache): MatchOutcome
 }
 
+interface MatchCacheRepository {
+    fun load(): MatchCache
+    fun save(cache: MatchCache)
+}
+
 class TitleMatcher(
     private val catalog: MovieCatalog,
     private val ratings: RatingSource,
