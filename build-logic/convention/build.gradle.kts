@@ -19,6 +19,7 @@ kotlin {
 
 dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.android.gradlePlugin)
 }
 
 gradlePlugin {
@@ -26,6 +27,26 @@ gradlePlugin {
         register("kotlinJvm") {
             id = "watchme.kotlin-jvm"
             implementationClass = "KotlinJvmConventionPlugin"
+        }
+        register("androidApplication") {
+            id = "watchme.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
+        register("androidLibrary") {
+            id = "watchme.android.library"
+            implementationClass = "AndroidLibraryConventionPlugin"
+        }
+        register("androidCompose") {
+            id = "watchme.android.compose"
+            implementationClass = "AndroidComposeConventionPlugin"
+        }
+        register("androidHilt") {
+            id = "watchme.android.hilt"
+            implementationClass = "AndroidHiltConventionPlugin"
+        }
+        register("androidFeature") {
+            id = "watchme.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
         }
     }
 }
