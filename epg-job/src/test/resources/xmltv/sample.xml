@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tv>
+  <channel id="TVP 1">
+    <display-name lang="pl">TVP 1</display-name>
+    <display-name lang="pl">TVP1</display-name>
+    <icon src="https://logo.example/tvp1.png" />
+  </channel>
+  <channel id="Canal+ Film">
+    <display-name lang="pl">Canal+ Film</display-name>
+  </channel>
+  <channel id="Foreign X">
+    <display-name lang="en">Foreign X</display-name>
+  </channel>
+  <programme start="20260927200000 +0200" stop="20260927220000 +0200" channel="TVP 1">
+    <title lang="pl">Pianista</title>
+    <desc lang="pl">G: film wojenny. R: 2002.</desc>
+    <date>2002</date>
+    <category lang="pl">film wojenny</category>
+    <category lang="pl">dramat</category>
+    <icon src="https://img.example/pianista.jpg" />
+  </programme>
+  <programme start="20260927180000 +0200" stop="20260927185000 +0200" channel="TVP 1">
+    <title lang="pl">Ranczo odc. 12</title>
+    <date>2009</date>
+    <category lang="pl">serial komediowy</category>
+  </programme>
+  <programme start="20260927193000 +0200" stop="20260927200000 +0200" channel="TVP 1">
+    <title lang="pl">Wiadomości</title>
+    <category lang="pl">program informacyjny</category>
+  </programme>
+  <programme start="20260927070000 +0200" stop="20260927093000 +0200" channel="Canal+ Film">
+    <title lang="pl">Diuna</title>
+    <date>2021</date>
+    <category lang="pl">film sci-fi</category>
+  </programme>
+  <programme start="20260927070000 +0200" stop="20260927090000 +0200" channel="Canal+ Film">
+    <title lang="pl">Za wcześnie</title>
+    <category lang="pl">film akcji</category>
+  </programme>
+  <programme start="20260929120000 +0200" stop="20260929140000 +0200" channel="Canal+ Film">
+    <title lang="pl">Za późno</title>
+    <category lang="pl">film akcji</category>
+  </programme>
+  <programme start="20260928230000 +0100" stop="20260929010000 +0100" channel="Canal+ Film">
+    <title lang="pl">Nocny film</title>
+    <date>19990101</date>
+    <category lang="pl">film kryminalny</category>
+  </programme>
+  <programme start="garbage" stop="20260927220000 +0200" channel="TVP 1">
+    <title lang="pl">Zepsuty</title>
+    <category lang="pl">film</category>
+  </programme>
+  <programme start="20260927200000 +0200" stop="20260927220000 +0200" channel="Foreign X">
+    <title lang="en">Foreign Movie</title>
+    <category lang="en">film</category>
+  </programme>
+</tv>

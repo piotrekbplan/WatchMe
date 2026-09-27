@@ -1,0 +1,68 @@
+name: epg-job
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: epg-job
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check whether a site was published before
+        id: pages
+        run: |
+          set +e
+          git ls-remote --exit-code --heads origin gh-pages > /dev/null
+          status=$?
+          set -e
+          case $status in
+            0) echo "exists=true" >> "$GITHUB_OUTPUT" ;;
+            2) echo "exists=false" >> "$GITHUB_OUTPUT" ;;
+            *) exit $status ;;
+          esac
+
+      - name: Checkout previously published site
+        if: steps.pages.outputs.exists == 'true'
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+          path: site
+
+      - name: Prepare site directory
+        run: rm -rf site/.git && mkdir -p site
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Run epg-job
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+        run: >
+          ./gradlew :epg-job:run --args="--out ${{ github.workspace }}/site
+          --catalog ${{ github.workspace }}/epg-job/data/catalog.yaml
+          --operators ${{ github.workspace }}/epg-job/data/operators.yaml"
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages
+          force_orphan: true
+          enable_jekyll: false

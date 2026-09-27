@@ -1,0 +1,19 @@
+groups:
+  - id: ogolne
+    name: Ogólne
+    channels: ["TVP 1", "TVP 2", "Polsat", "TVN", "TV 4", "TV Puls", "TVN 7", "TV 6", "Puls 2", "Super Polsat", "Polsat 2", "TTV", "Tele 5", "Fokus TV", "METRO", "NOWA TV", "ZOOM TV", "WP", "TVP Rozrywka", "TVP Kultura", "Polsat Rodzina"]
+  - id: filmowe
+    name: Filmowe
+    channels: ["Canal+ Premium", "Canal+ 1", "Canal+ Film", "Canal+ Family", "HBO", "HBO 2", "HBO 3", "Cinemax", "Cinemax 2", "Polsat Film", "Polsat Film 2", "TVN Fabuła", "Kino Polska", "Kino TV", "Stopklatka TV", "Paramount Channel", "AMC", "Warner TV", "Ale Kino+", "Sundance TV", "FILMBOX+ One", "FILMBOX+ Action", "FILMBOX+ Hits", "Filmbox Premium HD", "Filmbox Family", "Filmbox Arthouse", "FILMAX", "Epic Drama", "Skyshowtime 1", "Skyshowtime 2"]
+  - id: serialowe
+    name: Seriale
+    channels: ["Canal+ Seriale", "TVP Seriale", "Polsat Seriale", "FX", "FX Comedy", "Comedy Central", "Polsat Comedy Central Extra", "AXN", "AXN Black", "AXN White", "AXN Spin", "13 Ulica", "SCI FI", "CBS Europa", "CBS Action", "BBC First", "BBC Brit", "POLSAT ROMANS", "NOVELA TV", "Novelas+", "ROMANCE TV"]
+  - id: dokumentalne
+    name: Dokumentalne
+    channels: ["TVP Dokument", "TVP Historia", "Canal+ Dokument", "Planete+", "Discovery Channel", "Discovery Historia", "National Geographic Channel", "National Geographic Wild", "HISTORY", "Polsat Doku", "Polsat Viasat History", "Polsat Viasat Nature", "Animal Planet", "BBC Earth", "ID", "CI Polsat"]
+  - id: lifestyle
+    name: Rozrywka i styl życia
+    channels: ["TVN Style", "TVN Turbo", "Polsat Café", "Polsat Play", "TLC", "BBC Lifestyle", "Lifetime", "HGTV", "Food Network", "Canal+ Kuchnia", "Canal+ Domo", "Travel Channel", "E! Entertainment", "Discovery Life"]
+  - id: dzieciece
+    name: Dla dzieci
+    channels: ["TVP ABC", "Polsat JimJam", "Cartoon Network", "CARTOONITO", "Nickelodeon", "Nick Jr.", "Disney Channel", "Disney Junior", "Disney XD", "Teletoon", "Minimini+", "TOP KIDS"]
