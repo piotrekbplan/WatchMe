@@ -17,4 +17,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "WatchMe"
 
-include(":epg-contract")
+include(":epg-contract", ":epg-job")
