@@ -15,6 +15,7 @@ room {
 dependencies {
     api(project(":core:domain"))
     implementation(project(":epg-contract"))
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization)
@@ -25,4 +26,5 @@ dependencies {
     implementation(libs.slf4j.api)
 
     testImplementation(project(":core:testing"))
+    testRuntimeOnly(libs.logback.classic)
 }
