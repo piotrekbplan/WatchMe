@@ -89,6 +89,29 @@ class TitleMatcherTest {
     }
 
     @Test
+    fun `series with season number matches base title`() {
+        catalog.hits["Ranczo" to ProgrammeKind.SERIES] = listOf(seriesHit(7, "Ranczo", 2006))
+        catalog.imdbIds[7] = "tt7"
+        val request = series("Ranczo 2. Lokalna rewolucja.", 2026)
+
+        val entry = matcher().resolve(listOf(request), cache).entries.getValue(request.key)
+
+        assertThat(entry.imdbId).isEqualTo("tt7")
+    }
+
+    @Test
+    fun `movie sequel does not fall back to the original film`() {
+        catalog.hits["Shrek" to ProgrammeKind.MOVIE] = listOf(movieHit(8, "Shrek", 2001))
+        catalog.imdbIds[8] = "tt8"
+        val request = movie("Shrek 2.", 2004)
+
+        val entry = matcher().resolve(listOf(request), cache).entries.getValue(request.key)
+
+        assertThat(catalog.searches).containsExactly("Shrek 2", "Shrek")
+        assertThat(entry.imdbId).isNull()
+    }
+
+    @Test
     fun `same title airing many times is searched once`() {
         catalog.hits["Pianista" to ProgrammeKind.MOVIE] = listOf(movieHit(1, "Pianista", 2002))
         catalog.imdbIds[1] = "tt1"

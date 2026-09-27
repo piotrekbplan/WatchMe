@@ -43,6 +43,15 @@ class TitleNormalizerTest {
     }
 
     @Test
+    fun `candidates fall back to title without trailing season number`() {
+        assertThat(TitleNormalizer.candidates("Gra z Cieniem 2."))
+            .containsExactly("Gra z Cieniem 2", "Gra z Cieniem")
+        assertThat(TitleNormalizer.candidates("Ranczo 2. Lokalna rewolucja."))
+            .containsExactly("Ranczo 2. Lokalna rewolucja", "Ranczo 2", "Ranczo")
+        assertThat(TitleNormalizer.candidates("2012.")).containsExactly("2012")
+    }
+
+    @Test
     fun `key ignores case diacritics and punctuation`() {
         assertThat(TitleNormalizer.key("Gwiezdne Wojny: Nowa Nadzieja!")).isEqualTo("gwiezdne wojny nowa nadzieja")
         assertThat(TitleNormalizer.key("Łódź  Kaliska")).isEqualTo("lodz kaliska")

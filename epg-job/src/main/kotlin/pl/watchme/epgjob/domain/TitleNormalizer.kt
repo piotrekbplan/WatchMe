@@ -6,6 +6,7 @@ object TitleNormalizer {
         Regex("""[\s,:-]*\b(sezon|s\.)\s*\d+.*$""", RegexOption.IGNORE_CASE),
         Regex("""\s*\(\d+(/\d+)?\)\s*$"""),
     )
+    private val trailingSeasonNumber = Regex("""\s+\d+$""")
     private val separators = listOf(". ", ": ", " - ")
     private val nonAlphanumeric = Regex("[^a-z0-9]+")
 
@@ -20,7 +21,9 @@ object TitleNormalizer {
             .mapNotNull { separator -> cleaned.indexOf(separator).takeIf { it > 0 } }
             .minOrNull()
             ?.let { cleaned.substring(0, it).trim() }
-        return listOfNotNull(cleaned, prefix).filter { it.isNotBlank() }.distinct()
+        val base = listOfNotNull(cleaned, prefix)
+        val withoutSeason = base.map { it.replace(trailingSeasonNumber, "") }
+        return (base + withoutSeason).filter { it.isNotBlank() }.distinct()
     }
 
     fun key(title: String): String =
