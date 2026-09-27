@@ -2,6 +2,7 @@ plugins {
     id("watchme.android.library")
     id("watchme.android.hilt")
     alias(libs.plugins.room)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {

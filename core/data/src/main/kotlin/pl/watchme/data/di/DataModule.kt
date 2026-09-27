@@ -38,6 +38,14 @@ import retrofit2.create
 @Retention(AnnotationRetention.BINARY)
 annotation class EpgBaseUrl
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FirebaseApiKey
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FirebaseProjectId
+
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
