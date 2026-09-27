@@ -25,6 +25,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.slf4j.api)
+    implementation(libs.tink.android)
+    implementation(libs.androidx.datastore.preferences)
 
     testImplementation(project(":core:testing"))
     testRuntimeOnly(libs.logback.classic)
