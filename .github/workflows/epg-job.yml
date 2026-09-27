@@ -19,9 +19,22 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Check whether a site was published before
+        id: pages
+        run: |
+          set +e
+          git ls-remote --exit-code --heads origin gh-pages > /dev/null
+          status=$?
+          set -e
+          case $status in
+            0) echo "exists=true" >> "$GITHUB_OUTPUT" ;;
+            2) echo "exists=false" >> "$GITHUB_OUTPUT" ;;
+            *) exit $status ;;
+          esac
+
       - name: Checkout previously published site
+        if: steps.pages.outputs.exists == 'true'
         uses: actions/checkout@v5
-        continue-on-error: true
         with:
           ref: gh-pages
           path: site
