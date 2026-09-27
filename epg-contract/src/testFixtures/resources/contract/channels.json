@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    { "id": "tvp-1", "name": "TVP 1", "group": "ogolne", "groupName": "Ogólne", "logoUrl": "https://example.org/tvp1.png" },
+    { "id": "canal-plus-film", "name": "Canal+ Film", "group": "filmowe", "groupName": "Filmowe" }
+  ]
+}

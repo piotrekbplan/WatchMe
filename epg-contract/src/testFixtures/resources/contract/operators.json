@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "play",
+      "name": "Play",
+      "packages": [
+        { "id": "play-start", "name": "Play TV Start", "channelIds": ["tvp-1"] },
+        { "id": "play-max", "name": "Play TV Max", "channelIds": ["tvp-1", "canal-plus-film"] }
+      ]
+    }
+  ]
+}
