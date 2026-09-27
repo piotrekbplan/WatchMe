@@ -99,6 +99,16 @@ class ObserveRankingUseCaseTest {
     }
 
     @Test
+    fun `ranking reports when the guide was last refreshed`() = runTest {
+        lineups.lineup.value = selected
+        guides.lastRefreshAt = now.minusSeconds(1_800)
+
+        observeRanking(at = null).test {
+            assertThat(awaitItem().updatedAt).isEqualTo(now.minusSeconds(1_800))
+        }
+    }
+
+    @Test
     fun `catalog failure still ranks without channel details`() = runTest {
         catalogs.outcome = Outcome.Failure(DomainError.Network)
         lineups.lineup.value = selected

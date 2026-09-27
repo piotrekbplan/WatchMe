@@ -19,7 +19,12 @@ import pl.watchme.domain.repository.GuideRepository
 import pl.watchme.domain.repository.LineupRepository
 import pl.watchme.domain.valueOrNull
 
-data class Ranking(val guide: RankedGuide, val at: Instant, val hasChannels: Boolean)
+data class Ranking(
+    val guide: RankedGuide,
+    val at: Instant,
+    val hasChannels: Boolean,
+    val updatedAt: Instant? = null,
+)
 
 class ObserveRankingUseCase @Inject constructor(
     private val lineups: LineupRepository,
@@ -37,7 +42,12 @@ class ObserveRankingUseCase @Inject constructor(
             } else {
                 val channels = channelsOf(lineup)
                 guides.observe(lineup.channelIds, TimeWindow.around(now)).map { programmes ->
-                    Ranking(RankingPolicy.rank(programmes, channels, moment), moment, hasChannels = true)
+                    Ranking(
+                        guide = RankingPolicy.rank(programmes, channels, moment),
+                        at = moment,
+                        hasChannels = true,
+                        updatedAt = guides.lastRefresh(lineup.channelIds),
+                    )
                 }
             }
         }
