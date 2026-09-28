@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import pl.watchme.data.auth.StoredSession
 import pl.watchme.data.fakes.FakeLineupDao
 import pl.watchme.data.fakes.FakeSessionStore
+import pl.watchme.data.fakes.RecordingTransactionRunner
 import pl.watchme.data.mapper.toEntity
 import pl.watchme.data.repository.LineupRepositoryImpl
 import pl.watchme.domain.DomainError
@@ -158,6 +159,18 @@ class LineupSyncTest {
     }
 
     @Test
+    fun `a change saved during a fetch is not overwritten by the remote`() = runTest {
+        val env = Env(signedIn = true)
+        env.remote.stored["uid-1"] = older.copy(updatedAt = Instant.parse("2026-09-28T08:30:00Z"))
+        env.repository.save(older)
+        env.remote.onFetch = { env.dao.row.value = newer.toEntity().copy(dirty = true) }
+
+        env.repository.sync()
+
+        assertThat(env.dao.row.value).isEqualTo(newer.toEntity().copy(dirty = true))
+    }
+
+    @Test
     fun `clear removes the local lineup`() = runTest {
         val env = Env(signedIn = true)
         env.repository.save(older)
@@ -181,7 +194,7 @@ class LineupSyncTest {
         val sessions = FakeSessionStore(
             if (signedIn) StoredSession("uid-1", "jan@example.com", "id", "refresh", Long.MAX_VALUE) else null,
         )
-        val repository = LineupRepositoryImpl(dao, remote, sessions, scheduler)
+        val repository = LineupRepositoryImpl(dao, remote, sessions, scheduler, RecordingTransactionRunner())
     }
 
     private class RecordingScheduler : LineupSyncScheduler {
@@ -197,9 +210,11 @@ class LineupSyncTest {
         val pushed = mutableListOf<ChannelLineup>()
         var failure: Exception? = null
         var onPush: () -> Unit = {}
+        var onFetch: () -> Unit = {}
 
         override suspend fun fetch(uid: String): ChannelLineup? {
             failure?.let { throw it }
+            onFetch()
             return stored[uid]
         }
 

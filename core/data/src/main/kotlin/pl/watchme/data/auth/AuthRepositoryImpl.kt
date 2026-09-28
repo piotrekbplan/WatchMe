@@ -76,6 +76,9 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             log.warn("Firebase Auth is unreachable", e)
             Outcome.Failure(DomainError.Network)
+        } catch (e: Exception) {
+            log.error("Unexpected authentication failure", e)
+            Outcome.Failure(DomainError.Unknown(e::class.simpleName))
         }
 
     private fun StoredSession.toDomain(): Session? = Email.of(email)?.let { Session(UserId(uid), it) }

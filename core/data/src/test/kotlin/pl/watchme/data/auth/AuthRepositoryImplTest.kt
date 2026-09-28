@@ -55,6 +55,20 @@ class AuthRepositoryImplTest {
     }
 
     @Test
+    fun `secure storage failure is reported instead of crashing`() = runTest {
+        sessions.saveFailure = java.security.ProviderException("keystore unavailable")
+
+        assertThat(repository.signIn(email, "sekret1")).isEqualTo(Outcome.Failure(DomainError.Unknown("ProviderException")))
+    }
+
+    @Test
+    fun `unexpected response is reported instead of crashing`() = runTest {
+        remote.failure = NumberFormatException("expiresIn")
+
+        assertThat(repository.signIn(email, "sekret1")).isEqualTo(Outcome.Failure(DomainError.Unknown("NumberFormatException")))
+    }
+
+    @Test
     fun `sign up stores the session and sends a verification email`() = runTest {
         assertThat(repository.signUp(email, password)).isEqualTo(Outcome.Success(session))
         assertThat(remote.verificationsSent).containsExactly("id-1")

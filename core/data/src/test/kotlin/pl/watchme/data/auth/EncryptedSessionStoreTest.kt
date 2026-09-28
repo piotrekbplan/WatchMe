@@ -57,6 +57,15 @@ class EncryptedSessionStoreTest {
     }
 
     @Test
+    fun `keystore runtime failure while reading is wiped`() = runTest {
+        store.save(session)
+        cipher.runtimeFailure = true
+
+        assertThat(store.current()).isNull()
+        assertThat(blobs.data.value).isNull()
+    }
+
+    @Test
     fun `garbage blob is wiped`() = runTest {
         blobs.data.value = "%%% not base64 %%%"
 
@@ -74,11 +83,13 @@ class EncryptedSessionStoreTest {
 
     private class ReversingCipher : SessionCipher {
         var broken = false
+        var runtimeFailure = false
 
         override fun encrypt(plain: ByteArray): ByteArray = plain.reversedArray().map { (it + 1).toByte() }.toByteArray()
 
         override fun decrypt(encrypted: ByteArray): ByteArray {
             if (broken) throw GeneralSecurityException("key lost")
+            if (runtimeFailure) throw java.security.ProviderException("keystore unavailable")
             return encrypted.map { (it - 1).toByte() }.toByteArray().reversedArray()
         }
     }

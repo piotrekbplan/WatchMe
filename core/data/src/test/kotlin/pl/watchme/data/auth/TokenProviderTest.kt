@@ -84,6 +84,15 @@ class TokenProviderTest {
     }
 
     @Test
+    fun `unexpected refresh failure does not escape`() = runTest {
+        remote.failure = IllegalStateException("malformed refresh response")
+        val store = FakeSessionStore(session(expiresInSeconds = -10))
+
+        assertThat(provider(store).validToken()).isNull()
+        assertThat(store.session.value).isNotNull()
+    }
+
+    @Test
     fun `offline refresh keeps the session`() = runTest {
         remote.failure = FakeAuthRemoteSource.offline()
         val store = FakeSessionStore(session(expiresInSeconds = -10))

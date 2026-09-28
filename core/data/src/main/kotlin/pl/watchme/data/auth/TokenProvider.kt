@@ -5,6 +5,7 @@ import java.time.Clock
 import java.time.Duration
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -50,8 +51,13 @@ class TokenProvider @Inject constructor(
                 sessions.clear()
             }
             null
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: IOException) {
             log.warn("Token refresh failed", e)
+            null
+        } catch (e: Exception) {
+            log.error("Unexpected token refresh failure", e)
             null
         }
     }

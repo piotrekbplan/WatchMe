@@ -12,12 +12,14 @@ import pl.watchme.data.auth.StoredSession
 
 class FakeSessionStore(initial: StoredSession? = null) : SessionStore {
     val session = MutableStateFlow(initial)
+    var saveFailure: Exception? = null
 
     override fun observe(): Flow<StoredSession?> = session
 
     override suspend fun current(): StoredSession? = session.value
 
     override suspend fun save(session: StoredSession) {
+        saveFailure?.let { throw it }
         this.session.value = session
     }
 

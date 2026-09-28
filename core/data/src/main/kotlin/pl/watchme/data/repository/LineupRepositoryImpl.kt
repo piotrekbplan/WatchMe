@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.map
 import org.slf4j.LoggerFactory
 import pl.watchme.data.auth.SessionStore
 import pl.watchme.data.local.LineupDao
+import pl.watchme.data.local.TransactionRunner
 import pl.watchme.data.mapper.toDomain
 import pl.watchme.data.mapper.toEntity
 import pl.watchme.data.sync.LineupMerge
@@ -21,6 +22,7 @@ class LineupRepositoryImpl @Inject constructor(
     private val remote: LineupRemoteSource,
     private val sessions: SessionStore,
     private val scheduler: LineupSyncScheduler,
+    private val transactions: TransactionRunner,
 ) : LineupRepository {
 
     private val log = LoggerFactory.getLogger(LineupRepositoryImpl::class.java)
@@ -42,7 +44,11 @@ class LineupRepositoryImpl @Inject constructor(
                         remote.push(uid, action.lineup)
                         dao.markClean(action.lineup.updatedAt.toEpochMilli())
                     }
-                    is MergeAction.TakeRemote -> dao.upsert(action.lineup.toEntity())
+                    is MergeAction.TakeRemote -> transactions.run {
+                        if (dao.get()?.updatedAtMillis == local?.updatedAt?.toEpochMilli()) {
+                            dao.upsert(action.lineup.toEntity())
+                        }
+                    }
                     MergeAction.None -> local?.let { dao.markClean(it.updatedAt.toEpochMilli()) }
                 }
                 Outcome.Success(Unit)

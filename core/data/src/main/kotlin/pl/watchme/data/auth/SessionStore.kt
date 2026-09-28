@@ -1,5 +1,6 @@
 package pl.watchme.data.auth
 
+import java.io.IOException
 import java.security.GeneralSecurityException
 import java.util.Base64
 import javax.inject.Inject
@@ -70,7 +71,9 @@ class EncryptedSessionStore @Inject constructor(
             json.decodeFromString(StoredSession.serializer(), plain)
         } catch (e: GeneralSecurityException) {
             null
-        } catch (e: IllegalArgumentException) {
+        } catch (e: IOException) {
+            null
+        } catch (e: RuntimeException) {
             null
         }
 }
