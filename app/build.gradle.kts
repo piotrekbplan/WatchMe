@@ -36,6 +36,8 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":feature:lineup"))
     implementation(project(":feature:ranking"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:settings"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

@@ -19,3 +19,7 @@ class ObserveLineupUseCase @Inject constructor(private val lineups: LineupReposi
 class SaveLineupUseCase @Inject constructor(private val lineups: LineupRepository) {
     suspend operator fun invoke(lineup: ChannelLineup) = lineups.save(lineup)
 }
+
+class SyncLineupUseCase @Inject constructor(private val lineups: LineupRepository) {
+    suspend operator fun invoke(): Outcome<Unit> = lineups.sync()
+}

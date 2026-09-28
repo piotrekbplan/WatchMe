@@ -13,7 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,11 +50,16 @@ import pl.watchme.designsystem.component.SectionHeader
 import pl.watchme.designsystem.theme.WatchMeTheme
 
 @Composable
-fun RankingRoute(onEditChannels: () -> Unit, viewModel: RankingViewModel = hiltViewModel()) {
+fun RankingRoute(
+    onOpenSettings: () -> Unit,
+    onEditChannels: () -> Unit,
+    viewModel: RankingViewModel = hiltViewModel(),
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     RankingScreen(
         state = state,
         zone = ZoneId.systemDefault(),
+        onOpenSettings = onOpenSettings,
         onEditChannels = onEditChannels,
         onNowSelected = viewModel::onNowSelected,
         onTimeSelected = viewModel::onTimeSelected,
@@ -67,6 +72,7 @@ fun RankingRoute(onEditChannels: () -> Unit, viewModel: RankingViewModel = hiltV
 fun RankingScreen(
     state: RankingUiState,
     zone: ZoneId,
+    onOpenSettings: () -> Unit,
     onEditChannels: () -> Unit,
     onNowSelected: () -> Unit,
     onTimeSelected: (Instant) -> Unit,
@@ -89,8 +95,8 @@ fun RankingScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.ranking_title), color = MaterialTheme.colorScheme.primary) },
                 actions = {
-                    IconButton(onClick = onEditChannels) {
-                        Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.ranking_edit_channels))
+                    IconButton(onClick = onOpenSettings) {
+                        Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.ranking_settings))
                     }
                 },
             )
@@ -249,6 +255,7 @@ private fun RankingPreview() {
                 offlineSince = "18:30",
             ),
             zone = ZoneId.of("Europe/Warsaw"),
+            onOpenSettings = {},
             onEditChannels = {},
             onNowSelected = {},
             onTimeSelected = {},
