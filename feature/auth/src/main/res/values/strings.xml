@@ -1,0 +1,27 @@
+<resources>
+    <string name="auth_brand">WatchMe</string>
+    <string name="auth_tagline">Co najlepszego leci teraz w Twojej telewizji</string>
+    <string name="auth_email">E-mail</string>
+    <string name="auth_password">Hasło</string>
+    <string name="auth_confirmation">Powtórz hasło</string>
+    <string name="auth_sign_in">Zaloguj się</string>
+    <string name="auth_create_account">Załóż konto</string>
+    <string name="auth_forgot_password">Nie pamiętam hasła</string>
+    <string name="auth_register_title">Nowe konto</string>
+    <string name="auth_register_hint">Po rejestracji wyślemy na Twój e-mail link potwierdzający adres.</string>
+    <string name="auth_reset_title">Reset hasła</string>
+    <string name="auth_reset_hint">Podaj e-mail konta, a wyślemy link do ustawienia nowego hasła.</string>
+    <string name="auth_reset_send">Wyślij link</string>
+    <string name="auth_reset_sent">Jeśli konto istnieje, link do zmiany hasła jest już w Twojej skrzynce.</string>
+    <string name="auth_back">Wróć</string>
+    <string name="auth_error_invalid_email">Podaj poprawny adres e-mail</string>
+    <string name="auth_error_password_required">Podaj hasło</string>
+    <string name="auth_error_password_too_short">Hasło musi mieć co najmniej 6 znaków</string>
+    <string name="auth_error_passwords_differ">Hasła nie są takie same</string>
+    <string name="auth_error_invalid_credentials">Nieprawidłowy e-mail lub hasło</string>
+    <string name="auth_error_email_taken">Konto z tym adresem już istnieje</string>
+    <string name="auth_error_weak_password">Hasło jest zbyt słabe</string>
+    <string name="auth_error_too_many_attempts">Zbyt wiele prób. Spróbuj ponownie za chwilę.</string>
+    <string name="auth_error_network">Brak połączenia z internetem</string>
+    <string name="auth_error_unknown">Coś poszło nie tak. Spróbuj ponownie.</string>
+</resources>
