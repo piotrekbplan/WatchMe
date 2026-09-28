@@ -1,0 +1,9 @@
+<resources>
+    <string name="settings_title">Ustawienia</string>
+    <string name="settings_back">Wróć</string>
+    <string name="settings_account">Konto</string>
+    <string name="settings_channels">Zmień kanały</string>
+    <string name="settings_channels_hint">Operator, pakiet i lista kanałów</string>
+    <string name="settings_sign_out">Wyloguj się</string>
+    <string name="settings_version">Wersja %1$s</string>
+</resources>
