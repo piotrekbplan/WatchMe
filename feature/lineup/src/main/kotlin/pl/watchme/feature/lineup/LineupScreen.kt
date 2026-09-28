@@ -37,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -195,7 +196,7 @@ private fun OperatorCard(
                     Column(Modifier.weight(1f)) {
                         Text(pkg.name, style = MaterialTheme.typography.bodyLarge)
                         Text(
-                            stringResource(R.string.lineup_package_channels, pkg.channelCount),
+                            pluralStringResource(R.plurals.lineup_package_channels, pkg.channelCount, pkg.channelCount),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pl">
     <string name="settings_title">Ustawienia</string>
     <string name="settings_back">Wróć</string>
     <string name="settings_account">Konto</string>

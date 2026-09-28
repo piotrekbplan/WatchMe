@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pl">
     <string name="ranking_title">WatchMe</string>
     <string name="ranking_now">Teraz</string>
     <string name="ranking_pick_time">Wybierz godzinę</string>

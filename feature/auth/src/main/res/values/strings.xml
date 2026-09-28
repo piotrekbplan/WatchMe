@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pl">
     <string name="auth_brand">WatchMe</string>
     <string name="auth_tagline">Co najlepszego leci teraz w Twojej telewizji</string>
     <string name="auth_email">E-mail</string>
