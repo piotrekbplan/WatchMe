@@ -26,11 +26,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
+import pl.watchme.designsystem.R
 import pl.watchme.designsystem.theme.RatingTextStyle
 import pl.watchme.designsystem.theme.WatchMeColors
 import pl.watchme.designsystem.theme.WatchMeTheme
@@ -180,4 +188,20 @@ private fun ComponentsPreview() {
             }
         }
     }
+}
+
+private val LogoFont = FontFamily(Font(R.font.bebas_neue))
+
+@Composable
+fun WatchMeLogo(modifier: Modifier = Modifier, fontSize: TextUnit = 72.sp) {
+    Text(
+        text = buildAnnotatedString {
+            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground)) { append("Watch") }
+            withStyle(SpanStyle(color = WatchMeColors.Gold)) { append("Me") }
+        },
+        fontFamily = LogoFont,
+        fontSize = fontSize,
+        letterSpacing = 2.sp,
+        modifier = modifier,
+    )
 }

@@ -1,9 +1,14 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pl">
     <string name="lineup_title_operator">Twój operator</string>
     <string name="lineup_title_channels">Twoje kanały</string>
     <string name="lineup_operator_intro">Wybierz operatora i pakiet — zaznaczymy jego kanały, a potem możesz je dowolnie zmienić.</string>
     <string name="lineup_skip">Pomiń — wybiorę kanały ręcznie</string>
-    <string name="lineup_package_channels">%1$d kanałów</string>
+    <plurals name="lineup_package_channels">
+        <item quantity="one">%1$d kanał</item>
+        <item quantity="few">%1$d kanały</item>
+        <item quantity="many">%1$d kanałów</item>
+        <item quantity="other">%1$d kanału</item>
+    </plurals>
     <string name="lineup_search">Szukaj kanału</string>
     <string name="lineup_save">Zapisz (%1$d)</string>
     <string name="lineup_back">Wróć</string>

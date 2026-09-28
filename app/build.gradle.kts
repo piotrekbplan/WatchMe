@@ -1,9 +1,17 @@
+import java.util.Properties
+
 plugins {
     id("watchme.android.application")
     id("watchme.android.compose")
     id("watchme.android.hilt")
     alias(libs.plugins.kotlin.serialization)
 }
+
+val localProperties = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use(::load)
+}
+
+fun localProperty(name: String): String = localProperties.getProperty(name, "")
 
 android {
     namespace = "pl.watchme"
@@ -13,6 +21,8 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         buildConfigField("String", "EPG_BASE_URL", "\"https://piotrekbplan.github.io/WatchMe/\"")
+        buildConfigField("String", "FIREBASE_API_KEY", "\"${localProperty("firebase.apiKey")}\"")
+        buildConfigField("String", "FIREBASE_PROJECT_ID", "\"${localProperty("firebase.projectId")}\"")
     }
 
     buildFeatures {
@@ -26,6 +36,8 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":feature:lineup"))
     implementation(project(":feature:ranking"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:settings"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
@@ -33,6 +45,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.hilt.work)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.slf4j.api)
     implementation(libs.logback.android)

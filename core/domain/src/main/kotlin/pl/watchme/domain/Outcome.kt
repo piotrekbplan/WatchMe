@@ -1,9 +1,17 @@
 package pl.watchme.domain
 
+enum class Field { EMAIL, PASSWORD, PASSWORD_CONFIRMATION }
+
 sealed interface DomainError {
     data object Network : DomainError
     data object NotFound : DomainError
     data object UnsupportedData : DomainError
+    data object InvalidCredentials : DomainError
+    data object EmailAlreadyUsed : DomainError
+    data object WeakPassword : DomainError
+    data object TooManyAttempts : DomainError
+    data object Unauthorized : DomainError
+    data class Validation(val field: Field) : DomainError
     data class Unknown(val message: String?) : DomainError
 }
 

@@ -29,7 +29,13 @@ class MainActivity : ComponentActivity() {
             WatchMeTheme {
                 val start by startViewModel.destination.collectAsStateWithLifecycle()
                 Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-                    start?.let { WatchMeNavHost(start = it) }
+                    start?.let {
+                        WatchMeNavHost(
+                            start = it,
+                            sessionEnded = startViewModel.sessionEnded,
+                            appVersion = BuildConfig.VERSION_NAME,
+                        )
+                    }
                 }
             }
         }

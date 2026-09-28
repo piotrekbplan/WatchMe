@@ -1,17 +1,22 @@
 package pl.watchme
 
+import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
 import java.time.Instant
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import pl.watchme.domain.model.ChannelLineup
 import pl.watchme.domain.usecase.ObserveLineupUseCase
+import pl.watchme.domain.usecase.ObserveSessionUseCase
+import pl.watchme.domain.usecase.SyncLineupUseCase
 import pl.watchme.logging.CrashLogger
 import pl.watchme.navigation.StartDestination
 import pl.watchme.navigation.StartViewModel
+import pl.watchme.testing.FakeAuthRepository
 import pl.watchme.testing.FakeLineupRepository
 import pl.watchme.testing.MainDispatcherExtension
 import pl.watchme.testing.TestData
@@ -23,28 +28,56 @@ class StartAndCrashTest {
     val mainDispatcher = MainDispatcherExtension()
 
     private val now = Instant.parse("2026-09-28T19:00:00Z")
+    private val auth = FakeAuthRepository()
+    private val lineups = FakeLineupRepository()
+
+    private fun viewModel() = StartViewModel(
+        ObserveSessionUseCase(auth),
+        ObserveLineupUseCase(lineups),
+        SyncLineupUseCase(lineups),
+    )
 
     @Test
-    fun `first launch starts with channel selection`() {
-        val viewModel = StartViewModel(ObserveLineupUseCase(FakeLineupRepository()))
-
-        assertThat(viewModel.destination.value).isEqualTo(StartDestination.LINEUP)
+    fun `signed out user starts with sign in`() {
+        assertThat(viewModel().destination.value).isEqualTo(StartDestination.LOGIN)
+        assertThat(lineups.syncCalls).isEqualTo(0)
     }
 
     @Test
-    fun `empty lineup starts with channel selection`() {
-        val viewModel = StartViewModel(ObserveLineupUseCase(FakeLineupRepository(ChannelLineup.empty(now))))
+    fun `signed in user without channels starts with channel selection`() {
+        auth.session.value = TestData.session
+        lineups.lineup.value = ChannelLineup.empty(now)
 
-        assertThat(viewModel.destination.value).isEqualTo(StartDestination.LINEUP)
+        assertThat(viewModel().destination.value).isEqualTo(StartDestination.LINEUP)
     }
 
     @Test
-    fun `saved channels start with the ranking`() {
-        val lineup = ChannelLineup(setOf(TestData.tvp.id), null, now)
+    fun `signed in user with channels starts with the ranking and syncs`() {
+        auth.session.value = TestData.session
+        lineups.lineup.value = ChannelLineup(setOf(TestData.tvp.id), null, now)
 
-        val viewModel = StartViewModel(ObserveLineupUseCase(FakeLineupRepository(lineup)))
+        assertThat(viewModel().destination.value).isEqualTo(StartDestination.RANKING)
+        assertThat(lineups.syncCalls).isEqualTo(1)
+    }
 
-        assertThat(viewModel.destination.value).isEqualTo(StartDestination.RANKING)
+    @Test
+    fun `losing the session is reported once`() = runTest {
+        auth.session.value = TestData.session
+        val viewModel = viewModel()
+
+        viewModel.sessionEnded.test {
+            auth.session.value = null
+
+            assertThat(awaitItem()).isEqualTo(Unit)
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `starting signed out does not report a lost session`() = runTest {
+        viewModel().sessionEnded.test {
+            expectNoEvents()
+        }
     }
 
     @Test

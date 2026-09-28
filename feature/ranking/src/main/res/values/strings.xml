@@ -1,8 +1,8 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pl">
     <string name="ranking_title">WatchMe</string>
     <string name="ranking_now">Teraz</string>
     <string name="ranking_pick_time">Wybierz godzinę</string>
-    <string name="ranking_edit_channels">Zmień kanały</string>
+    <string name="ranking_settings">Ustawienia</string>
     <string name="ranking_unrated">Bez oceny</string>
     <string name="ranking_offline_since">Offline · dane z %1$s</string>
     <string name="ranking_offline">Offline · pokazuję zapisane dane</string>

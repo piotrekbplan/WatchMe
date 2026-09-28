@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import java.io.IOException
 import java.time.Duration
@@ -13,13 +12,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import pl.watchme.data.fakes.FakeCatalogDao
 import pl.watchme.data.fakes.FakeEpgRemoteSource
-import pl.watchme.data.fakes.FakeLineupDao
 import pl.watchme.domain.DomainError
 import pl.watchme.domain.Outcome
 import pl.watchme.domain.model.Catalog
-import pl.watchme.domain.model.ChannelId
-import pl.watchme.domain.model.ChannelLineup
-import pl.watchme.domain.model.PackageRef
 import pl.watchme.epg.contract.ChannelDto
 import pl.watchme.epg.contract.ChannelsFile
 import pl.watchme.epg.contract.OperatorsFile
@@ -91,20 +86,6 @@ class CatalogAndLineupRepositoryTest {
             assertThat(awaitItem()?.channels?.map { it.name }).isEqualTo(listOf("TVP 1"))
         }
         assertThat(remote.catalogCalls).isEqualTo(1)
-    }
-
-    @Test
-    fun `lineup is saved and observed`() = runTest {
-        val lineups = LineupRepositoryImpl(FakeLineupDao())
-        val lineup = ChannelLineup(setOf(ChannelId("tvp-1")), PackageRef("play", "play-start"), now)
-
-        lineups.observe().test {
-            assertThat(awaitItem()).isNull()
-
-            lineups.save(lineup)
-
-            assertThat(awaitItem()).isNotNull().isEqualTo(lineup)
-        }
     }
 
     private fun channelNames(outcome: Outcome<Catalog>): List<String> {

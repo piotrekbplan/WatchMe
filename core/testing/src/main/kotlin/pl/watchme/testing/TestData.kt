@@ -5,10 +5,13 @@ import pl.watchme.domain.model.Catalog
 import pl.watchme.domain.model.Channel
 import pl.watchme.domain.model.ChannelId
 import pl.watchme.domain.model.ChannelPackage
+import pl.watchme.domain.model.Email
 import pl.watchme.domain.model.ImdbRating
 import pl.watchme.domain.model.Programme
 import pl.watchme.domain.model.ProgrammeKind
+import pl.watchme.domain.model.Session
 import pl.watchme.domain.model.TvOperator
+import pl.watchme.domain.model.UserId
 
 object TestData {
     val tvp = Channel(ChannelId("tvp-1"), "TVP 1", "ogolne", "Ogólne", "https://logo.example/tvp1.png")
@@ -18,6 +21,7 @@ object TestData {
     val playMax = ChannelPackage("play-max", "Play TV Max", listOf(tvp.id, tvn.id, hbo.id))
     val play = TvOperator("play", "Play", listOf(playStart, playMax))
     val catalog = Catalog(listOf(tvp, tvn, hbo), listOf(play))
+    val session = Session(UserId("uid-1"), checkNotNull(Email.of("jan@example.com")))
 
     fun programme(
         title: String,
