@@ -1,6 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pl">
-    <string name="auth_brand">WatchMe</string>
-    <string name="auth_tagline">Co najlepszego leci teraz w Twojej telewizji</string>
     <string name="auth_email">E-mail</string>
     <string name="auth_password">Hasło</string>
     <string name="auth_confirmation">Powtórz hasło</string>
@@ -14,6 +12,8 @@
     <string name="auth_reset_send">Wyślij link</string>
     <string name="auth_reset_sent">Jeśli konto istnieje, link do zmiany hasła jest już w Twojej skrzynce.</string>
     <string name="auth_back">Wróć</string>
+    <string name="auth_show_password">Pokaż hasło</string>
+    <string name="auth_hide_password">Ukryj hasło</string>
     <string name="auth_error_invalid_email">Podaj poprawny adres e-mail</string>
     <string name="auth_error_password_required">Podaj hasło</string>
     <string name="auth_error_password_too_short">Hasło musi mieć co najmniej 6 znaków</string>

@@ -24,7 +24,7 @@ class SettingsViewModelTest {
 
     private val auth = FakeAuthRepository().apply { session.value = TestData.session }
     private val lineups = FakeLineupRepository(ChannelLineup(setOf(TestData.tvp.id), null, Instant.EPOCH))
-    private val viewModel = SettingsViewModel(ObserveSessionUseCase(auth), SignOutUseCase(auth, lineups))
+    private val viewModel by lazy { SettingsViewModel(ObserveSessionUseCase(auth), SignOutUseCase(auth, lineups)) }
 
     @Test
     fun `shows the signed in email`() {
